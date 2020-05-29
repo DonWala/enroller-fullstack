@@ -23,7 +23,7 @@ public class MeetingService {
 
     public Collection<Meeting> getAll() {
         String hql = "FROM Meeting";
-        Query query = connector.getSession().createQuery(hql);
+        Query query = session.createQuery(hql);
         return query.list();
     }
 
@@ -34,6 +34,10 @@ public class MeetingService {
     	return meeting;
     }
     
+	public Meeting findById(long id) {
+		return (Meeting) session.get(Meeting.class, id);
+	}
+    
     public void delete(Meeting meeting) {
     	Transaction transaction = this.session.beginTransaction();
     	session.delete(meeting);
@@ -43,7 +47,7 @@ public class MeetingService {
     public Participant addParticipant (Meeting meeting, Participant participant) {
     	Transaction transaction = this.session.beginTransaction();
     	meeting.addParticipant(participant);
-    	session.save(meeting);
+    	session.merge(meeting);
     	transaction.commit();
     	return participant;
     }
@@ -56,7 +60,5 @@ public class MeetingService {
 		return meeting;
 	}
     
-	public Meeting findById(long id) {
-		return (Meeting) session.get(Meeting.class, id);
-	}
+
 }
